@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boa Via - Entrar / Criar Conta</title>
+    <style>
+        :root {
+            --verde: #053c35;
+            --verde-claro: #0a6d5c;
+            --verde-fundo: #eef6f4;
+            --borda: #053c3551;
+            --erro: #b3261e;
+        }
+
+        * {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            box-sizing: border-box;
+        }
+
+        p {
+            font-weight: 900;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* ---------- Círculo decorativo ---------- */
+        .circuloDecor {
+            position: fixed;
+            top: -180px;
+            left: -180px;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #0a8f74, #053c35 70%);
+            opacity: 0.9;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .circuloDecor::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle at 65% 65%, rgba(255, 255, 255, 0.12), transparent 60%);
+        }
+
+        /* Conteúdo por cima do círculo */
+        .conteudo {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .espaceLogo {
+
+            height: 160px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .espaceLogo img {
+            display: block;
+            width: 150px;
+            height: 100px;
+            object-fit: contain;
+            margin: 0 auto;
+        }
+
+        .especaForm {
+            width: 420px;
+            max-width: 92vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 14px;
+            padding: 24px 28px 32px;
+            background: white;
+            border-radius: 16px;
+
+            margin-bottom: 40px;
+        }
+
+        .especaForm h2 {
+            margin: 0;
+            color: var(--verde);
+        }
+
+        .especaForm>p {
+            margin: 0;
+            color: #4a6a64;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* ---------- Seletor Cliente / Mercador ---------- */
+        .divSelectUser {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: var(--verde-fundo);
+            padding: 4px;
+            border-radius: 12px;
+        }
+
+        .divSelectUser button {
+            flex: 1;
+            height: 38px;
+            background: transparent;
+            outline: none;
+            border: none;
+            border-radius: 9px;
+            font-weight: 900;
+            color: var(--verde);
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .divSelectUser button.ativo {
+            background-color: var(--verde);
+            color: white;
+        }
+
+        /* ---------- Indicador de passos ---------- */
+        .indicadorPassos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin: 4px 0 2px;
+        }
+
+        .indicadorPassos .bolinha {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #d6e6e2;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .indicadorPassos .bolinha.ativa {
+            background: var(--verde);
+            transform: scale(1.15);
+        }
+
+        .indicadorPassos .bolinha.concluida {
+            background: var(--verde-claro);
+        }
+
+        /* ---------- Formulários ---------- */
+        form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .passo {
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .passo.ativo {
+            display: flex;
+        }
+
+        .tituloPasso {
+            color: var(--verde);
+            font-size: 14px;
+            font-weight: 900;
+            margin: 0 0 -4px 2px;
+            letter-spacing: 0.3px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            height: 44px;
+            border: 1px solid var(--borda);
+            outline: none;
+            padding-left: 12px;
+            padding-right: 12px;
+            border-radius: 8px;
+            color: var(--verde);
+            font-weight: 700;
+            font-size: 14px;
+            background: white;
+        }
+
+        input::placeholder {
+            color: #6b8b85;
+            font-weight: 600;
+        }
+
+        /* ---------- Campo de senha com botão de mostrar/ocultar ---------- */
+        .campoSenha {
+            position: relative;
+            width: 100%;
+        }
+
+        .campoSenha input {
+            padding-right: 44px;
+        }
+
+        .botaoOlho {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: transparent;
+            color: #6b8b85;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .botaoOlho:hover {
+            color: var(--verde);
+        }
+
+        .botaoOlho svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--verde);
+            box-shadow: 0 0 0 3px rgba(5, 60, 53, 0.12);
+        }
+
+        input.campoInvalido {
+            border-color: var(--erro);
+        }
+
+        .mensagemErro {
+            width: 100%;
+            color: var(--erro);
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: -8px;
+            display: none;
+        }
+
+        .mensagemErro.visivel {
+            display: block;
+        }
+
+        /* ---------- Upload de foto de perfil ---------- */
+        .uploadFoto {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .previaFoto {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: var(--verde-fundo);
+            border: 2px dashed var(--borda);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: var(--verde);
+            cursor: pointer;
+            transition: border-color 0.15s ease, background 0.15s ease;
+        }
+
+        .previaFoto:hover {
+            border-color: var(--verde);
+            background: #e3f0ec;
+        }
+
+        .previaFoto svg {
+            width: 34px;
+            height: 34px;
+        }
+
+        .previaFoto img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .uploadFoto input[type="file"] {
+            display: none;
+        }
+
+        .botaoEscolherFoto {
+            border: none;
+            background: var(--verde-fundo);
+            color: var(--verde);
+            font-weight: 800;
+            font-size: 13px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* ---------- Upload de imagens do veículo ---------- */
+        .uploadVeiculo {
+            width: 100%;
+            border: 1px dashed var(--borda);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .uploadVeiculo input[type="file"] {
+            display: none;
+        }
+
+        .previaVeiculo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .previaVeiculo img {
+            width: 56px;
+            height: 56px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        /* ---------- Botões de navegação ---------- */
+        .navegacaoPassos {
+            width: 100%;
+            display: flex;
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .botaoVoltar,
+        .botaoAvancar,
+        .botaoEnviar,
+        .botaoEntrar {
+            border: none;
+            height: 50px;
+            border-radius: 10px;
+            font-weight: 900;
+            cursor: pointer;
+            font-size: 16px;
+            letter-spacing: 0.2px;
+            transition: opacity 0.15s ease, transform 0.05s ease;
+        }
+
+        .botaoVoltar:active,
+        .botaoAvancar:active,
+        .botaoEnviar:active,
+        .botaoEntrar:active {
+            transform: scale(0.98);
+        }
+
+        .botaoAvancar,
+        .botaoEnviar,
+        .botaoEntrar {
+            flex: 1;
+            width: 100%;
+            color: white;
+            background-color: var(--verde);
+            box-shadow: 0 4px 14px rgba(5, 60, 53, 0.25);
+        }
+
+        .botaoAvancar:hover,
+        .botaoEnviar:hover,
+        .botaoEntrar:hover {
+            opacity: 0.92;
+        }
+
+        .botaoVoltar {
+            flex: 0 0 110px;
+            background: var(--verde-fundo);
+            color: var(--verde);
+        }
+
+        .botaoVoltar:hover {
+            background: #dfeeea;
+        }
+
+        /* ---------- Rodapé de troca de modo ---------- */
+        .rodapeForm {
+            letter-spacing: 0.2px;
+            color: #333;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .rodapeForm a,
+        .trocarModo {
+            text-decoration: none;
+            color: var(--verde);
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 14px;
+        }
+
+        /* ---------- Estado escondido ---------- */
+        .escondido {
+            display: none !important;
+        }
+
+        /* ---------- Mensagem de sucesso ---------- */
+        .toastSucesso {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--verde);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 14px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            z-index: 10;
+        }
+
+        .toastSucesso.visivel {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ---------- Responsividade ---------- */
+        @media (max-width: 480px) {
+            body {
+                align-items: stretch;
+                justify-content: flex-start;
+            }
+
+            .conteudo {
+                min-height: 100vh;
+            }
+
+            .espaceLogo {
+                height: 120px;
+                margin-top: 10%;
+            }
+
+            .especaForm {
+                width: 100%;
+                max-width: 100%;
+                flex: 1;
+                border-radius: 0;
+                box-shadow: none;
+                background: transparent;
+                margin-bottom: 50%;
+                padding: 12px 24px 32px;
+            }
+
+            /* Círculo escondido no mobile: só o formulário deve aparecer */
+            .circuloDecor {
+                display: none;
+            }
+
+            .navegacaoPassos {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .botaoVoltar,
+            .botaoAvancar,
+            .botaoEnviar {
+                width: 100%;
+                flex: none;
+                height: 50px;
+            }
+
+            .botaoVoltar {
+                order: 2;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="circuloDecor"></div>
+
+    <div class="conteudo">
+        <div class="espaceLogo">
+            <img src="assets/images/logogreen.png" alt="Boa Via">
+        </div>
+
+        <div class="especaForm">
+            <h2 id="tituloForm">Criar Conta</h2>
+            <p id="subtituloForm">Junte-se a milhares de usuários</p>
+
+            <div class="divSelectUser">
+                <button type="button" id="btnCli" class="ativo">Cliente</button>
+                <button type="button" id="btnMerc">Mercador</button>
+            </div>
+
+            <!-- Indicador de passos (só aparece no cadastro) -->
+            <div class="indicadorPassos" id="indicadorPassos"></div>
+
+            <!-- ===================== LOGIN ===================== -->
+            <form id="formLogin" class="escondido" novalidate>
+                <div class="passo ativo">
+                    <input type="text" id="loginIdentificador" placeholder="Email ou telefone" required>
+                    <span class="mensagemErro" id="erroLoginIdentificador">Informe o email ou telefone.</span>
+
+                    <div class="campoSenha">
+                        <input type="password" id="loginSenha" placeholder="Senha" required>
+                        <button type="button" class="botaoOlho" data-alvo="loginSenha"
+                            aria-label="Mostrar senha"></button>
+                    </div>
+                    <span class="mensagemErro" id="erroLoginSenha">Informe a sua senha.</span>
+                </div>
+                <button type="button" class="botaoEntrar" id="botaoEntrar">Entrar</button>
+            </form>
+
+            <!-- ===================== CADASTRO CLIENTE ===================== -->
+            <form id="formCliente" novalidate>
+                <div class="passo ativo" data-passo="0">
+                    <p class="tituloPasso">Foto de perfil</p>
+                    <div class="uploadFoto">
+                        <label class="previaFoto" id="previaFotoCliente">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z" />
+                                <circle cx="12" cy="13" r="3.5" />
+                            </svg>
+                        </label>
+                        <input type="file" accept="image/*" id="inputFotoCliente">
+                    </div>
+                </div>
+
+                <div class="passo" data-passo="1">
+                    <p class="tituloPasso">Dados pessoais</p>
+                    <input type="text" id="clienteNome" placeholder="Nome completo" required>
+                    <span class="mensagemErro" id="erroClienteNome">Informe o seu nome completo.</span>
+                </div>
+
+                <div class="passo" data-passo="2">
+                    <p class="tituloPasso">Contacto</p>
+                    <input type="email" id="clienteEmail" placeholder="Email" required>
+                    <span class="mensagemErro" id="erroClienteEmail">Informe um email válido.</span>
+
+                    <input type="tel" id="clienteTelefone" placeholder="Telefone" required>
+                    <span class="mensagemErro" id="erroClienteTelefone">Informe o seu telefone.</span>
+                </div>
+
+                <div class="passo" data-passo="3">
+                    <p class="tituloPasso">Segurança</p>
+                    <div class="campoSenha">
+                        <input type="password" id="clienteSenha" placeholder="Senha" required>
+                        <button type="button" class="botaoOlho" data-alvo="clienteSenha"
+                            aria-label="Mostrar senha"></button>
+                    </div>
+                    <span class="mensagemErro" id="erroClienteSenha">A senha deve ter no mínimo 6 caracteres.</span>
+
+                    <div class="campoSenha">
+                        <input type="password" id="clienteConfirmarSenha" placeholder="Confirme a senha" required>
+                        <button type="button" class="botaoOlho" data-alvo="clienteConfirmarSenha"
+                            aria-label="Mostrar senha"></button>
+                    </div>
+                    <span class="mensagemErro" id="erroClienteConfirmarSenha">As senhas não coincidem.</span>
+                </div>
+
+                <div class="navegacaoPassos">
+                    <button type="button" class="botaoVoltar escondido" data-voltar>Voltar</button>
+                    <button type="button" class="botaoAvancar" data-avancar>Avançar</button>
+                    <button type="button" class="botaoEnviar escondido" data-enviar>Criar conta</button>
+                </div>
+            </form>
+
+            <!-- ===================== CADASTRO MERCADOR ===================== -->
+            <form id="formMercador" class="escondido" novalidate>
+                <div class="passo ativo" data-passo="0">
+                    <p class="tituloPasso">Conta</p>
+                    <input type="text" id="mercNome" placeholder="Nome completo" required>
+                    <span class="mensagemErro" id="erroMercNome">Informe o seu nome completo.</span>
+
+                    <input type="email" id="mercEmail" placeholder="Email" required>
+                    <span class="mensagemErro" id="erroMercEmail">Informe um email válido.</span>
+
+                    <div class="campoSenha">
+                        <input type="password" id="mercSenha" placeholder="Senha" required>
+                        <button type="button" class="botaoOlho" data-alvo="mercSenha"
+                            aria-label="Mostrar senha"></button>
+                    </div>
+                    <span class="mensagemErro" id="erroMercSenha">A senha deve ter no mínimo 6 caracteres.</span>
+
+                    <div class="campoSenha">
+                        <input type="password" id="mercConfirmarSenha" placeholder="Confirme a senha" required>
+                        <button type="button" class="botaoOlho" data-alvo="mercConfirmarSenha"
+                            aria-label="Mostrar senha"></button>
+                    </div>
+                    <span class="mensagemErro" id="erroMercConfirmarSenha">As senhas não coincidem.</span>
+                </div>
+
+                <div class="passo" data-passo="1">
+                    <p class="tituloPasso">Dados do veículo</p>
+                    <input type="text" id="mercMatricula" placeholder="Matrícula" required>
+                    <span class="mensagemErro" id="erroMercMatricula">Informe a matrícula do veículo.</span>
+
+                    <input type="text" id="mercMarca" placeholder="Marca" required>
+                    <span class="mensagemErro" id="erroMercMarca">Informe a marca do veículo.</span>
+
+                    <input type="text" id="mercModelo" placeholder="Modelo" required>
+                    <span class="mensagemErro" id="erroMercModelo">Informe o modelo do veículo.</span>
+
+                    <div class="uploadVeiculo">
+                        <label for="inputImagensVeiculo" class="botaoEscolherFoto">Adicionar imagens do veículo</label>
+                        <input type="file" accept="image/*" multiple id="inputImagensVeiculo">
+                        <div class="previaVeiculo" id="previaImagensVeiculo"></div>
+                    </div>
+                    <span class="mensagemErro" id="erroMercImagens">Adicione pelo menos uma imagem do veículo.</span>
+                </div>
+
+                <div class="passo" data-passo="2">
+                    <p class="tituloPasso">Perfil e documentos</p>
+                    <div class="uploadFoto">
+                        <label class="previaFoto" id="previaFotoMercador">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z" />
+                                <circle cx="12" cy="13" r="3.5" />
+                            </svg>
+                        </label>
+                        <input type="file" accept="image/*" id="inputFotoMercador">
+                    </div>
+
+                    <input type="text" id="mercBI" placeholder="Número de BI" required>
+                    <span class="mensagemErro" id="erroMercBI">Informe o número do seu BI.</span>
+
+                    <input type="tel" id="mercTelefone" placeholder="Telefone" required>
+                    <span class="mensagemErro" id="erroMercTelefone">Informe o seu telefone.</span>
+
+                    <select id="mercMetodoPagamento" required>
+                        <option value="" disabled selected>Método de pagamento</option>
+                        <option value="transferencia">Transferência bancária</option>
+                        <option value="multicaixa">Multicaixa Express</option>
+                        <option value="dinheiro">Dinheiro</option>
+                    </select>
+                    <span class="mensagemErro" id="erroMercMetodoPagamento">Escolha um método de pagamento.</span>
+                </div>
+
+                <div class="navegacaoPassos">
+                    <button type="button" class="botaoVoltar escondido" data-voltar>Voltar</button>
+                    <button type="button" class="botaoAvancar" data-avancar>Avançar</button>
+                    <button type="button" class="botaoEnviar escondido" data-enviar>Criar conta</button>
+                </div>
+            </form>
+
+            <span class="rodapeForm" id="rodapeForm">
+                Já tenho uma conta? <a href="javascript:void(0)" class="trocarModo" id="linkTrocarModo">Entrar</a>
+            </span>
+        </div>
+    </div>
+
+    <div class="toastSucesso" id="toastSucesso"></div>
+
+    <script>
+        // ========================================================
+        // Estado geral
+        // ========================================================
+        const estado = {
+            tipoUsuario: 'cliente', // 'cliente' | 'mercador'
+            modo: 'cadastro',       // 'cadastro' | 'login'
+        };
+
+        const el = (id) => document.getElementById(id);
+
+        const btnCli = el('btnCli');
+        const btnMerc = el('btnMerc');
+        const formLogin = el('formLogin');
+        const formCliente = el('formCliente');
+        const formMercador = el('formMercador');
+        const tituloForm = el('tituloForm');
+        const subtituloForm = el('subtituloForm');
+        const rodapeForm = el('rodapeForm');
+        const linkTrocarModo = el('linkTrocarModo');
+        const indicadorPassos = el('indicadorPassos');
+        const toast = el('toastSucesso');
+
+        // ========================================================
+        // Utilitários
+        // ========================================================
+        function mostrarToast(mensagem) {
+            toast.textContent = mensagem;
+            toast.classList.add('visivel');
+            setTimeout(() => toast.classList.remove('visivel'), 2600);
+        }
+
+        function mostrarErro(inputId, erroId, mostrar) {
+            const input = el(inputId);
+            const erro = el(erroId);
+            if (input) input.classList.toggle('campoInvalido', mostrar);
+            if (erro) erro.classList.toggle('visivel', mostrar);
+        }
+
+        function emailValido(valor) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor);
+        }
+
+        function configurarPreviaFoto(inputId, previaId) {
+            const input = el(inputId);
+            const previa = el(previaId);
+            const iconeOriginal = previa.innerHTML;
+            input.addEventListener('change', () => {
+                const arquivo = input.files[0];
+                if (!arquivo) return;
+                const leitor = new FileReader();
+                leitor.onload = (e) => {
+                    previa.innerHTML = `<img src="${e.target.result}" alt="Foto de perfil">`;
+                };
+                leitor.readAsDataURL(arquivo);
+            });
+            previa.addEventListener('click', () => input.click());
+            return () => { previa.innerHTML = iconeOriginal; };
+        }
+
+        function configurarPreviaVeiculo(inputId, previaId) {
+            const input = el(inputId);
+            const previa = el(previaId);
+            input.addEventListener('change', () => {
+                previa.innerHTML = '';
+                Array.from(input.files).forEach((arquivo) => {
+                    const leitor = new FileReader();
+                    leitor.onload = (e) => {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        previa.appendChild(img);
+                    };
+                    leitor.readAsDataURL(arquivo);
+                });
+            });
+        }
+
+        const reiniciarFotoCliente = configurarPreviaFoto('inputFotoCliente', 'previaFotoCliente');
+        const reiniciarFotoMercador = configurarPreviaFoto('inputFotoMercador', 'previaFotoMercador');
+        configurarPreviaVeiculo('inputImagensVeiculo', 'previaImagensVeiculo');
+
+        // ========================================================
+        // Mostrar / ocultar senha
+        // ========================================================
+        const ICONE_OLHO_ABERTO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>`;
+        const ICONE_OLHO_FECHADO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.9 10.9 0 0 1 12 5c7 0 10.5 7 10.5 7a13.2 13.2 0 0 1-3.1 4.1M6.6 6.6C3.8 8.3 1.5 12 1.5 12s3.5 7 10.5 7c1.4 0 2.7-.3 3.9-.7"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>`;
+
+        document.querySelectorAll('.botaoOlho').forEach((botao) => {
+            botao.innerHTML = ICONE_OLHO_ABERTO;
+            botao.addEventListener('click', () => {
+                const input = el(botao.dataset.alvo);
+                const estaMostrando = input.type === 'text';
+                input.type = estaMostrando ? 'password' : 'text';
+                botao.innerHTML = estaMostrando ? ICONE_OLHO_ABERTO : ICONE_OLHO_FECHADO;
+                botao.setAttribute('aria-label', estaMostrando ? 'Mostrar senha' : 'Ocultar senha');
+            });
+        });
+
+        // ========================================================
+        // Controlador de formulário em passos
+        // ========================================================
+        function criarControladorDePassos(form, validadoresPorPasso) {
+            const passos = Array.from(form.querySelectorAll('.passo'));
+            const botaoVoltar = form.querySelector('[data-voltar]');
+            const botaoAvancar = form.querySelector('[data-avancar]');
+            const botaoEnviar = form.querySelector('[data-enviar]');
+            let passoAtual = 0;
+
+            function renderizarIndicador() {
+                indicadorPassos.innerHTML = '';
+                passos.forEach((_, i) => {
+                    const bolinha = document.createElement('div');
+                    bolinha.className = 'bolinha';
+                    if (i === passoAtual) bolinha.classList.add('ativa');
+                    else if (i < passoAtual) bolinha.classList.add('concluida');
+                    indicadorPassos.appendChild(bolinha);
+                });
+            }
+
+            function atualizarView() {
+                passos.forEach((p, i) => p.classList.toggle('ativo', i === passoAtual));
+                botaoVoltar.classList.toggle('escondido', passoAtual === 0);
+                const ultimoPasso = passoAtual === passos.length - 1;
+                botaoAvancar.classList.toggle('escondido', ultimoPasso);
+                botaoEnviar.classList.toggle('escondido', !ultimoPasso);
+                renderizarIndicador();
+            }
+
+            botaoAvancar.addEventListener('click', () => {
+                const validador = validadoresPorPasso[passoAtual];
+                if (validador && !validador()) return;
+                passoAtual = Math.min(passoAtual + 1, passos.length - 1);
+                atualizarView();
+            });
+
+            botaoVoltar.addEventListener('click', () => {
+                passoAtual = Math.max(passoAtual - 1, 0);
+                atualizarView();
+            });
+
+            botaoEnviar.addEventListener('click', () => {
+                const validador = validadoresPorPasso[passoAtual];
+                if (validador && !validador()) return;
+                form.dispatchEvent(new CustomEvent('formConcluido'));
+            });
+
+            function reiniciar() {
+                passoAtual = 0;
+                atualizarView();
+            }
+
+            atualizarView();
+            return { reiniciar };
+        }
+
+        // ---- Validadores: Cliente ----
+        const validadoresCliente = [
+            () => true, // passo 0: foto (opcional)
+            () => {
+                const valido = el('clienteNome').value.trim().length > 1;
+                mostrarErro('clienteNome', 'erroClienteNome', !valido);
+                return valido;
+            },
+            () => {
+                const emailOk = emailValido(el('clienteEmail').value.trim());
+                const telOk = el('clienteTelefone').value.trim().length >= 9;
+                mostrarErro('clienteEmail', 'erroClienteEmail', !emailOk);
+                mostrarErro('clienteTelefone', 'erroClienteTelefone', !telOk);
+                return emailOk && telOk;
+            },
+            () => {
+                const senha = el('clienteSenha').value;
+                const confirmar = el('clienteConfirmarSenha').value;
+                const senhaOk = senha.length >= 6;
+                const confirmarOk = senhaOk && senha === confirmar;
+                mostrarErro('clienteSenha', 'erroClienteSenha', !senhaOk);
+                mostrarErro('clienteConfirmarSenha', 'erroClienteConfirmarSenha', !confirmarOk);
+                return senhaOk && confirmarOk;
+            },
+        ];
+
+        // ---- Validadores: Mercador ----
+        const validadoresMercador = [
+            () => {
+                const nomeOk = el('mercNome').value.trim().length > 1;
+                const emailOk = emailValido(el('mercEmail').value.trim());
+                const senha = el('mercSenha').value;
+                const confirmar = el('mercConfirmarSenha').value;
+                const senhaOk = senha.length >= 6;
+                const confirmarOk = senhaOk && senha === confirmar;
+                mostrarErro('mercNome', 'erroMercNome', !nomeOk);
+                mostrarErro('mercEmail', 'erroMercEmail', !emailOk);
+                mostrarErro('mercSenha', 'erroMercSenha', !senhaOk);
+                mostrarErro('mercConfirmarSenha', 'erroMercConfirmarSenha', !confirmarOk);
+                return nomeOk && emailOk && senhaOk && confirmarOk;
+            },
+            () => {
+                const matriculaOk = el('mercMatricula').value.trim().length > 1;
+                const marcaOk = el('mercMarca').value.trim().length > 1;
+                const modeloOk = el('mercModelo').value.trim().length > 1;
+                const imagensOk = el('inputImagensVeiculo').files.length > 0;
+                mostrarErro('mercMatricula', 'erroMercMatricula', !matriculaOk);
+                mostrarErro('mercMarca', 'erroMercMarca', !marcaOk);
+                mostrarErro('mercModelo', 'erroMercModelo', !modeloOk);
+                el('erroMercImagens').classList.toggle('visivel', !imagensOk);
+                return matriculaOk && marcaOk && modeloOk && imagensOk;
+            },
+            () => {
+                const biOk = el('mercBI').value.trim().length > 3;
+                const telOk = el('mercTelefone').value.trim().length >= 9;
+                const metodoOk = el('mercMetodoPagamento').value !== '';
+                mostrarErro('mercBI', 'erroMercBI', !biOk);
+                mostrarErro('mercTelefone', 'erroMercTelefone', !telOk);
+                el('erroMercMetodoPagamento').classList.toggle('visivel', !metodoOk);
+                return biOk && telOk && metodoOk;
+            },
+        ];
+
+        const controladorCliente = criarControladorDePassos(formCliente, validadoresCliente);
+        const controladorMercador = criarControladorDePassos(formMercador, validadoresMercador);
+
+        // ========================================================
+        // Envio dos formulários (pronto para ligar à API FastAPI)
+        // ========================================================
+        formCliente.addEventListener('formConcluido', async () => {
+            const dados = {
+                tipo: 'cliente',
+                nome: el('clienteNome').value.trim(),
+                email: el('clienteEmail').value.trim(),
+                telefone: el('clienteTelefone').value.trim(),
+                senha: el('clienteSenha').value,
+                foto: el('inputFotoCliente').files[0] || null,
+            };
+
+            // Exemplo de chamada à API (ajustar endpoint real do backend FastAPI):
+            //
+            // const formData = new FormData();
+            // Object.entries(dados).forEach(([chave, valor]) => formData.append(chave, valor));
+            // await fetch('http://127.0.0.1:8000/cadastro/cliente', { method: 'POST', body: formData });
+
+            console.log('Cadastro de cliente:', dados);
+            localStorage.setItem('bv_sessao', JSON.stringify({tipo:'cliente',nome:dados.nome,email:dados.email}));
+            mostrarToast('Conta de cliente criada com sucesso!');
+            setTimeout(() => window.location.assign('app.html#/c/solicitar'), 700);
+            formCliente.reset();
+            reiniciarFotoCliente();
+            controladorCliente.reiniciar();
+        });
+
+        formMercador.addEventListener('formConcluido', async () => {
+            const dados = {
+                tipo: 'mercador',
+                nome: el('mercNome').value.trim(),
+                email: el('mercEmail').value.trim(),
+                senha: el('mercSenha').value,
+                matricula: el('mercMatricula').value.trim(),
+                marca: el('mercMarca').value.trim(),
+                modelo: el('mercModelo').value.trim(),
+                imagensVeiculo: Array.from(el('inputImagensVeiculo').files),
+                foto: el('inputFotoMercador').files[0] || null,
+                bi: el('mercBI').value.trim(),
+                telefone: el('mercTelefone').value.trim(),
+                metodoPagamento: el('mercMetodoPagamento').value,
+            };
+
+            // const formData = new FormData();
+            // ... anexar campos e ficheiros ...
+            // await fetch('http://127.0.0.1:8000/cadastro/mercador', { method: 'POST', body: formData });
+
+            console.log('Cadastro de mercador:', dados);
+            localStorage.setItem('bv_sessao', JSON.stringify({tipo:'mercador',nome:dados.nome,email:dados.email}));
+            mostrarToast('Conta de mercador criada com sucesso!');
+            setTimeout(() => window.location.assign('app.html#/m/pedidos'), 700);
+            formMercador.reset();
+            reiniciarFotoMercador();
+            el('previaImagensVeiculo').innerHTML = '';
+            controladorMercador.reiniciar();
+        });
+
+        el('botaoEntrar').addEventListener('click', async () => {
+            const identificador = el('loginIdentificador').value.trim();
+            const senha = el('loginSenha').value;
+            const identificadorOk = identificador.length > 2;
+            const senhaOk = senha.length > 0;
+            mostrarErro('loginIdentificador', 'erroLoginIdentificador', !identificadorOk);
+            mostrarErro('loginSenha', 'erroLoginSenha', !senhaOk);
+            if (!identificadorOk || !senhaOk) return;
+
+            const dados = { tipo: estado.tipoUsuario, identificador, senha };
+
+            // await fetch('http://127.0.0.1:8000/login/' + estado.tipoUsuario, {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify(dados),
+            // });
+
+            console.log('Login:', dados);
+            localStorage.setItem('bv_sessao', JSON.stringify({tipo:estado.tipoUsuario,nome:identificador.split('@')[0],email:identificador}));
+            mostrarToast('Sessão iniciada com sucesso!');
+            setTimeout(() => window.location.assign((estado.tipoUsuario === 'cliente' ? 'app.html#/c/solicitar' : 'app.html#/m/pedidos')), 700);
+        });
+
+        // ========================================================
+        // Alternância Cliente / Mercador
+        // ========================================================
+        function selecionarTipoUsuario(tipo) {
+            estado.tipoUsuario = tipo;
+            btnCli.classList.toggle('ativo', tipo === 'cliente');
+            btnMerc.classList.toggle('ativo', tipo === 'mercador');
+            atualizarFormularioVisivel();
+        }
+
+        btnCli.addEventListener('click', () => selecionarTipoUsuario('cliente'));
+        btnMerc.addEventListener('click', () => selecionarTipoUsuario('mercador'));
+
+        // ========================================================
+        // Alternância Cadastro / Login
+        // ========================================================
+        function atualizarFormularioVisivel() {
+            const ehLogin = estado.modo === 'login';
+
+            formLogin.classList.toggle('escondido', !ehLogin);
+            formCliente.classList.toggle('escondido', ehLogin || estado.tipoUsuario !== 'cliente');
+            formMercador.classList.toggle('escondido', ehLogin || estado.tipoUsuario !== 'mercador');
+            indicadorPassos.classList.toggle('escondido', ehLogin);
+
+            if (ehLogin) {
+                indicadorPassos.innerHTML = '';
+                tituloForm.textContent = 'Entrar';
+                subtituloForm.textContent = 'Aceda à sua conta Boa Via';
+                rodapeForm.innerHTML = 'Ainda não tem conta? <a href="javascript:void(0)" class="trocarModo" id="linkTrocarModo">Criar conta</a>';
+            } else {
+                tituloForm.textContent = 'Criar Conta';
+                subtituloForm.textContent = 'Junte-se a milhares de usuários';
+                rodapeForm.innerHTML = 'Já tenho uma conta? <a href="javascript:void(0)" class="trocarModo" id="linkTrocarModo">Entrar</a>';
+                if (estado.tipoUsuario === 'cliente') controladorCliente.reiniciar();
+                else controladorMercador.reiniciar();
+            }
+
+            // Reanexa o listener porque o link foi recriado via innerHTML
+            el('linkTrocarModo').addEventListener('click', () => {
+                estado.modo = estado.modo === 'login' ? 'cadastro' : 'login';
+                atualizarFormularioVisivel();
+            });
+        }
+
+        linkTrocarModo.addEventListener('click', () => {
+            estado.modo = estado.modo === 'login' ? 'cadastro' : 'login';
+            atualizarFormularioVisivel();
+        });
+
+        // Estado inicial
+        atualizarFormularioVisivel();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boavia</title>
+    <style>
+        body {
+            background-color: #012d28;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .img-bg {
+            background: #012d28;
+            position: fixed;
+            z-index: -1000;
+
+            left: 0%;
+            right: 0%;
+            bottom: 0%;
+            width: 100%;
+            height: 70%;
+            -webkit-mask-image: linear-gradient(to top, transparent 0%, black 40%, black 30%, transparent 100%)
+        }
+
+        .img-bg img {
+            opacity: 0.2;
+            top: 0%;
+            left: 0%;
+            right: 0%;
+            bottom: 0%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(0.5px);
+        }
+
+        .espaceLogo {
+
+            height: 200px;
+           
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin-top: 8%;
+
+        }
+
+        .espaceLogo img {
+            width: 380px;
+            max-width: 90%;
+            height: auto;
+        }
+
+        .espaceLogo p {
+            font-weight: 900;
+            font-size: clamp(18px, 5vw, 28px);
+            text-align: center;
+            padding: 0 12px;
+            color: white;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+
+        .navButtons {
+
+            width: 200px;
+            height: 200px;
+            bottom: 2%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin-top: 7%;
+            gap: 10px;
+        }
+
+        .navButtons button {
+            width: 100%;
+            height: 50px;
+            border-radius: 15px;
+
+            outline: none;
+            color: white;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .btnSingUp {
+            background: #049442;
+            border: none;
+        }
+
+        .btnLogin {
+            background: transparent;
+            border: 2px solid white;
+            backdrop-filter: blur(1px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="espaceLogo">
+        <img src="assets/images/logotipo-text.png" alt="" srcset="">
+        <p>CONENTANDO CARGAS, MOVER O SEU MUNDO</p>
+    </div>
+    <div class="img-bg">
+        <img src="assets/images/hero-truck.jpg" alt="" srcset="">
+    </div>
+    <div class="navButtons">
+        <button type="button" class="btnSingUp" onclick="pageAseguir('auth.html')">Criar conta</button>
+        <button type="button" class="btnLogin" onclick="pageAseguir('auth.html')">Entrar</button>
+    </div>
+    <script>
+        function pageAseguir(url) {
+            window.location.assign(url);
+            
+        }
+    </script>
+</body>
+
+</html>
